@@ -1,0 +1,90 @@
+.HamburgerWrapper {
+  z-index: 100;
+  top: 10px;
+  left: 40px;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  /* transition: left 0.2s ease-in-out; */
+}
+.Hamburger {
+  display: block;
+  width: 50px;
+  height: 4px;
+  margin: 20px auto;
+  background-color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+.Hamburger::before,
+.Hamburger::after {
+  display: block;
+  content: '';
+  background-color: #fff;
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+
+  position: relative;
+}
+.Hamburger::before {
+  top: 12px;
+}
+.Hamburger::after {
+  top: -15px;
+}
+.HamburgerWrapper.Active {
+  left: 315px;
+}
+.HamburgerWrapper.Active > span {
+  opacity: 1;
+  transform: rotate(45deg);
+}
+.HamburgerWrapper.Active > span::before {
+  display: none;
+}
+.HamburgerWrapper.Active > span::after {
+  transform: rotate(-90deg);
+  top: 0px;
+}
+.background {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  z-index: 50;
+}
+.none {
+  display: block;
+}
+.Menu {
+  transition: left 0.2s ease-in-out;
+  left: -300px;
+  width: 300px;
+  position: absolute;
+  height: 100%;
+  background-color: #fff;
+}
+.MenuActive {
+  left: 0;
+}
+.Menu ul li {
+  margin-left: 30px;
+  margin-bottom: 10px;
+  font-size: 26px;
+}
+.Menu ul li a {
+  color: rgb(161, 156, 156);
+  text-decoration: none;
+}
+.Menu ul li a:hover {
+  color: #5344b6;
+}
+.ActiveLink {
+  color: #111 !important;
+}

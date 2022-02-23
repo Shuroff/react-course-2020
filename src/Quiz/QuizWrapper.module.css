@@ -1,0 +1,9 @@
+.quizWrapper {
+  display: flex;
+  align-items: center;
+  margin-top: -100px;
+  justify-content: center;
+  width: 100%;
+  height: calc(100vh + 100px);
+  background: linear-gradient(90deg, #5041b2 0%, #7969e6 100%);
+}

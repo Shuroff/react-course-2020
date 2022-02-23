@@ -1,0 +1,8 @@
+.quiz {
+  box-sizing: border-box;
+  width: 600px;
+  margin: 0;
+  border: 1px solid #fff;
+  color: #fff;
+  border-radius: 6px;
+}

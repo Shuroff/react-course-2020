@@ -1,0 +1,9 @@
+.question {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0 10px 0;
+  padding-left: 16px;
+}
+.question p {
+  margin: 0 14px 0 0;
+}
