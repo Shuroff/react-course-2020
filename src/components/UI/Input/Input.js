@@ -10,7 +10,6 @@ export function Input(props) {
   if (isInvalid(props)) {
     cls.push(classes.invalid)
   }
-  console.log('input -> ', props)
   return (
     <div className={cls.join(' ')}>
       <label htmlFor={htmlFor}>{props.label}</label>

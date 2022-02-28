@@ -1,0 +1,20 @@
+.Button {
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-right: 15px;
+  font-size: 12px;
+  border: 1px solid #96adfb;
+  text-transform: uppercase;
+  border-radius: 2px;
+  font-weight: bold;
+}
+
+.Green {
+  background-color: #b2ec66;
+  color: #111;
+}
+
+.Blue {
+  background-color: #4184ee;
+  color: #fff;
+}

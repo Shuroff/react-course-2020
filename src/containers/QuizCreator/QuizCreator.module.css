@@ -1,0 +1,39 @@
+.Background {
+  background: linear-gradient(
+    90deg,
+    rgb(240, 112, 62) 0%,
+    rgb(240, 99, 43) 67%,
+    rgb(216, 75, 20) 100%
+  );
+  padding-top: 100px;
+  height: 100vh;
+  width: 100%;
+}
+.Wrapper {
+  width: 600px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+}
+h4 {
+  align-self: center;
+}
+form {
+  margin: 20px 0;
+  padding: 10px 20px;
+  width: 100%;
+  background-color: #fff;
+}
+select {
+  margin-top: 5px;
+  display: block;
+  cursor: pointer;
+  border: 1px solid #666;
+  margin-bottom: 20px;
+}
+label {
+  color: #111;
+  font-weight: bold;
+}

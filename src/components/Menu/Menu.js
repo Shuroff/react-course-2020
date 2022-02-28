@@ -18,11 +18,13 @@ export function Menu(props) {
       return !prevState
     })
   }
-  const links = [
-    { to: '/', label: 'Список' },
-    { to: '/auth', label: 'Авторизация' },
-    { to: '/quiz-creator', label: 'Создать тест' },
-  ]
+  const links = [{ to: '/', label: 'Список' }]
+  if (props.authorized) {
+    links.push({ to: '/quiz-creator', label: 'Создать тест' })
+    links.push({ to: '/exit', label: 'Выйти' })
+  } else {
+    links.push({ to: '/auth', label: 'Авторизация' })
+  }
   return (
     <>
       <div className={cls.join(' ')} onClick={toggleMenu}>
