@@ -2,11 +2,11 @@ import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { useState } from 'react'
 import { QuizWrapper } from './components/Quiz/QuizWrapper/QuizWrapper'
-import { Quiz } from './Quiz/quiz'
+import { Quiz } from './components/Quiz/quiz'
 import { QuizList } from './containers/QuizList/QuizList'
 import { Auth } from './containers/Auth/Auth'
 import { QuizCreator } from './containers/QuizCreator/QuizCreator'
-import { Menu } from './Menu/Menu'
+import { Menu } from './components/Menu/Menu'
 function App() {
   const [state, setState] = useState({
     authorized: true,
