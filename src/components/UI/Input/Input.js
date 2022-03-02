@@ -1,7 +1,6 @@
 import classes from './Input.module.css'
 
 function isInvalid({ valid, touched, shouldValidate }) {
-  console.log(valid, touched, shouldValidate)
   return !valid && shouldValidate && touched
 }
 export function Input(props) {

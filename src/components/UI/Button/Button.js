@@ -7,7 +7,6 @@ export function Button(props) {
   if (props.color === 'blue') {
     cls.push(classes.Blue)
   }
-
   return (
     <button
       disabled={props.disabled}

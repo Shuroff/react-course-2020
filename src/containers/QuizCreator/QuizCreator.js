@@ -51,7 +51,6 @@ export function QuizCreator(props) {
       return { ...prevState, answers, formControls }
     })
   }
-
   function changeQuestionHandler(event) {
     const question = event.target.value
     const formControls = state.formControls
@@ -96,7 +95,8 @@ export function QuizCreator(props) {
       )
     })
   }
-  function addQuestionHandler() {
+  function addQuestionHandler(event) {
+    event.preventDefault()
     setState((prevState) => {
       const questions = prevState.questions
       questions.push({
@@ -115,16 +115,17 @@ export function QuizCreator(props) {
     }
     return isValid
   }
-  async function createTestHandler() {
+  async function createTestHandler(event) {
+    event.preventDefault()
     try {
-      await axios.post(
-        'https://react-quiz-253c1-default-rtdb.europe-west1.firebasedatabase.app/quizes.json',
-        state.questions
-      )
+      await axios.post('/quizes.json', state.questions)
       setState(initialState)
     } catch (e) {
       console.log(e)
     }
+  }
+  function isQuestonsEmpty() {
+    return state.questions.length === 0 ? true : false
   }
   return (
     <div className={classes.Background}>
@@ -140,6 +141,7 @@ export function QuizCreator(props) {
             valid={state.formControls.question.valid}
             touched={state.formControls.question.touched}
             shouldValidate={true}
+            errorMessage="Не оставляйте поле пустым"
           />
           {createOptionInputs(state.answers)}
           <label htmlFor="select">Выберите правильный ответ</label>
@@ -156,13 +158,13 @@ export function QuizCreator(props) {
             onClick={addQuestionHandler}
             text="Добавить вопрос"
             color="blue"
-            disabled={isFormValid()}
+            disabled={!isFormValid()}
           ></Button>
           <Button
             onClick={createTestHandler}
             text="Создать тест"
             color="green"
-            disabled={isFormValid()}
+            disabled={isQuestonsEmpty()}
           ></Button>
         </form>
       </div>

@@ -3,6 +3,9 @@ import { useState } from 'react'
 import { Question } from '../Question/Question'
 import { AnswerList } from '../Answer/AnswerList'
 import { Finish } from '../Finish/Finish'
+import { useEffect } from 'react/cjs/react.development'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 export function Quiz() {
   const initialState = {
     questions: [
@@ -47,6 +50,11 @@ export function Quiz() {
     answeredQuestions: [], // {id: true/false}
   }
   const [state, setState] = useState(initialState)
+  const navigate = useNavigate()
+  console.log('navigate', navigate)
+  // useEffect(() => {
+
+  // }, [])
   const changeAnsweredQuestions = (question) => {
     setState((prevState) => {
       const newAnsweredQuestions = [...prevState.answeredQuestions, question]
