@@ -13,7 +13,10 @@
   background-color: #b2ec66;
   color: #111;
 }
-
+.Button[disabled] {
+  background-color: gray;
+  color: #fff;
+}
 .Blue {
   background-color: #4184ee;
   color: #fff;

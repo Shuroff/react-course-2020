@@ -6,7 +6,7 @@ import axios from '../../axios/axios-quiz'
 function formControlsCreator(number) {
   const formControls = {}
   const input = {
-    valid: true,
+    valid: false,
     touched: false,
     validation: {
       required: true,
@@ -31,6 +31,7 @@ export function QuizCreator(props) {
     rightAnswerId: null,
     formControls: formControlsCreator(4),
   }
+
   const [state, setState] = useState(initialState)
 
   function changeOptionsHandler(value, i) {
@@ -40,8 +41,8 @@ export function QuizCreator(props) {
     const formControls = state.formControls
     let control = formControls[`input${i}`]
     control.touched = true
-    const isValid = control.valid
-    if (question.trim() === '' && control.touched) {
+    const isValid = true
+    if (question.trim() === '') {
       isValid = false
     }
     control.valid = isValid
@@ -56,8 +57,9 @@ export function QuizCreator(props) {
     const formControls = state.formControls
     let control = formControls.question
     control.touched = true
-    let isValid = control.valid
-    if (question.trim() === '' && control.touched) {
+    let isValid = true
+
+    if (question.trim() === '') {
       isValid = false
     }
     control.valid = isValid
@@ -84,6 +86,7 @@ export function QuizCreator(props) {
             onChange={(event) =>
               changeOptionsHandler(event.target.value, index + 1)
             }
+            valid={state.formControls[`input${index}`].valid}
             id={key}
             errorMessage="Не оставляйте поле пустым"
           />
@@ -132,6 +135,7 @@ export function QuizCreator(props) {
             id="question"
             value={state.question}
             onChange={(event) => changeQuestionHandler(event)}
+            valid={state.formControls.question.valid}
           />
           {createOptionInputs(state.answers)}
           <label htmlFor="select">Выберите правильный ответ</label>

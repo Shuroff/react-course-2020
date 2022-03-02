@@ -10,6 +10,7 @@ export function Input(props) {
   if (isInvalid(props)) {
     cls.push(classes.invalid)
   }
+  console.log(props)
 
   return (
     <div className={cls.join(' ')}>
