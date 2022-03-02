@@ -1,6 +1,7 @@
 import classes from './Input.module.css'
 
 function isInvalid({ valid, touched, shouldValidate }) {
+  console.log(valid, touched, shouldValidate)
   return !valid && shouldValidate && touched
 }
 export function Input(props) {
@@ -10,7 +11,6 @@ export function Input(props) {
   if (isInvalid(props)) {
     cls.push(classes.invalid)
   }
-  console.log(props)
 
   return (
     <div className={cls.join(' ')}>

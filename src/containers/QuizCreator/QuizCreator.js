@@ -41,7 +41,7 @@ export function QuizCreator(props) {
     const formControls = state.formControls
     let control = formControls[`input${i}`]
     control.touched = true
-    const isValid = true
+    let isValid = true
     if (question.trim() === '') {
       isValid = false
     }
@@ -86,7 +86,9 @@ export function QuizCreator(props) {
             onChange={(event) =>
               changeOptionsHandler(event.target.value, index + 1)
             }
-            valid={state.formControls[`input${index}`].valid}
+            valid={state.formControls[`input${index + 1}`].valid}
+            touched={state.formControls[`input${index + 1}`].touched}
+            shouldValidate={true}
             id={key}
             errorMessage="Не оставляйте поле пустым"
           />
@@ -136,6 +138,8 @@ export function QuizCreator(props) {
             value={state.question}
             onChange={(event) => changeQuestionHandler(event)}
             valid={state.formControls.question.valid}
+            touched={state.formControls.question.touched}
+            shouldValidate={true}
           />
           {createOptionInputs(state.answers)}
           <label htmlFor="select">Выберите правильный ответ</label>
