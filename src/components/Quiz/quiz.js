@@ -4,57 +4,32 @@ import { Question } from '../Question/Question'
 import { AnswerList } from '../Answer/AnswerList'
 import { Finish } from '../Finish/Finish'
 import { useEffect } from 'react/cjs/react.development'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import axios from '../../axios/axios-quiz'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 export function Quiz() {
   const initialState = {
-    questions: [
-      {
-        question: 'Столица Нигерии?',
-        answers: ['Нигер', 'Нлукумба', 'Абуджа', 'Махачкала'],
-        rightId: 2,
-      },
-      {
-        question: 'Гей ли Сизыч?',
-        answers: [
-          'Нет он натуризыч',
-          'Да, он гей-слейв',
-          'Нет, он самуризыч',
-          'Нет, он Джейсон Сизыч и ломал всем лица',
-        ],
-        rightId: 1,
-      },
-      {
-        question: 'Кто играет в геньшин?',
-        answers: ['Бибочка', 'Бэк', 'Анхрюгор', 'Сквиртё'],
-        rightId: 1,
-      },
-      {
-        question: 'Что есть у макрона?',
-        answers: [
-          'Мощные житцепсы',
-          'Воля к победе',
-          'Много волос',
-          'Целлюлит на жопе',
-        ],
-        rightId: 3,
-      },
-      {
-        question: 'Какая кровать у Фурса?',
-        answers: ['Потрёпаная', 'Поёбаная', 'Подроченная', 'Пожёванная'],
-        rightId: 3,
-      },
-    ],
+    questions: [],
+    loading: true,
     currentQuestion: 0,
     isFinished: false,
     answeredQuestions: [], // {id: true/false}
   }
   const [state, setState] = useState(initialState)
-  const navigate = useNavigate()
-  console.log('navigate', navigate)
-  // useEffect(() => {
 
-  // }, [])
+  const params = useParams()
+  useEffect(() => {
+    axios
+      .get(`/quizes/${params.id}.json`)
+      .then((quiz) => {
+        const isFinished = false
+        setState((prevState) => {
+          return { ...prevState, questions: quiz.data, loading: false }
+        })
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+  }, [])
   const changeAnsweredQuestions = (question) => {
     setState((prevState) => {
       const newAnsweredQuestions = [...prevState.answeredQuestions, question]
@@ -73,7 +48,18 @@ export function Quiz() {
     }
   }
   const refresh = () => {
-    setState(initialState)
+    setState((prevState) => {
+      return {
+        ...prevState,
+        loading: false,
+        isFinished: false,
+        answeredQuestions: [],
+        currentQuestion: 0,
+      }
+    })
+  }
+  if (state.loading) {
+    return <h1>...loading</h1>
   }
   const currentQuestion = state.currentQuestion
   const text = state.questions[currentQuestion].question

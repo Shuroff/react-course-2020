@@ -9,8 +9,9 @@ export function AnswerItem(props) {
       props.nextQuestion()
     }, 1000)
   }
+  console.log(props)
   const clickHandler = (event) => {
-    if (props.index === props.rightId) {
+    if (props.index + 1 === props.rightId) {
       setState([...state, classes.success])
       const question = {}
       question[props.currentQuestion] = true

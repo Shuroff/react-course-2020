@@ -10,12 +10,14 @@ export function QuizList(props) {
   })
   function renderQuizes(quizes) {
     let result = []
-    for (let i = 0; i < Object.keys(quizes).length; i++) {
+    let i = 1
+    for (let key of Object.keys(quizes)) {
       result.push(
-        <li key={i}>
-          <NavLink to={'/quiz/' + (i + 1)}>Тест №{i + 1}</NavLink>
+        <li key={key}>
+          <NavLink to={'/quiz/' + key}>Тест №{i}</NavLink>
         </li>
       )
+      i++
     }
     return result
   }

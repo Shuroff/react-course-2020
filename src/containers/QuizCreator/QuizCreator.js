@@ -31,8 +31,9 @@ export function QuizCreator(props) {
     rightAnswerId: null,
     formControls: formControlsCreator(4),
   }
-
   const [state, setState] = useState(initialState)
+
+  console.log('state', state)
 
   function changeOptionsHandler(value, i) {
     const question = value
