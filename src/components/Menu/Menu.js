@@ -34,6 +34,21 @@ export function Menu(props) {
         <div className={MenuCls.join(' ')}>
           <ul>
             {links.map((link, index) => {
+              if (link.to === '/exit') {
+                return (
+                  <li key={link.label + index}>
+                    <a
+                      href="#"
+                      onClick={(event) => {
+                        event.preventDefault()
+                        props.setAuthorized(false)
+                      }}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                )
+              }
               return (
                 <li key={link.label + index}>
                   <NavLink

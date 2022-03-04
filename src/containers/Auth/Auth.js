@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import axios from 'axios'
 import classes from './Auth.module.css'
 import { Input } from '../../components/UI/Input/Input'
-
+import { Button } from '../../components/UI/Button/Button'
+import { func } from 'prop-types'
 const validateEmail = (email) => {
   return String(email)
     .toLowerCase()
@@ -39,9 +41,44 @@ export function Auth(props) {
       },
     },
   })
+  const API_KEY = 'AIzaSyCJROTW2d3snrUe6naVnMlDFnmwWV4kJOw'
 
-  function loginHandler() {}
-  function registerHandler() {}
+  function isFormValid() {
+    return state.formControls.email.valid && state.formControls.password.valid
+  }
+
+  async function loginHandler() {
+    const payload = {
+      email: state.formControls.email.value,
+      password: state.formControls.email.value,
+      returnSecureToken: true,
+    }
+    try {
+      const response = await axios.post(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`,
+        payload
+      )
+      props.setAuthorized(true)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  async function registerHandler() {
+    const payload = {
+      email: state.formControls.email.value,
+      password: state.formControls.email.value,
+      returnSecureToken: true,
+    }
+    try {
+      const response = await axios.post(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`,
+        payload
+      )
+      props.setAuthorized(true)
+    } catch (e) {
+      console.log(e)
+    }
+  }
   function submitHandler(event) {
     event.preventDefault()
   }
@@ -73,7 +110,6 @@ export function Auth(props) {
     const control = { ...formControls[controlName] }
 
     control.value = event.target.value
-    console.log(event.target.value)
     control.touched = true
     control.valid = validateControl(control.value, control.validation)
 
@@ -89,12 +125,6 @@ export function Auth(props) {
       return (
         <Input
           key={controlName + index}
-          // type={control.type}
-          // value={control.value}
-          // valid={control.valid}
-          // touched={control.touched}
-          // label={control.label}
-          // errorMessage={control.errorMessage}
           shouldValidate={!!control.validation}
           {...control}
           onChange={(event) => onChangeHandler(event, controlName)}
@@ -108,19 +138,18 @@ export function Auth(props) {
         <h1>Авторизация</h1>
         <form onSubmit={submitHandler} className={classes.AuthForm}>
           {renderInputs()}
-
-          <button
-            className={(classes.button, classes.refresh)}
+          <Button
+            color="blue"
+            disabled={!isFormValid()}
             onClick={loginHandler}
-          >
-            Войти
-          </button>
-          <button
-            className={(classes.button, classes.toQuizes)}
+            text="Войти"
+          />
+          <Button
+            color="green"
+            disabled={!isFormValid()}
             onClick={registerHandler}
-          >
-            Зарегистрироваться
-          </button>
+            text="Зарегистрироваться"
+          />
         </form>
       </div>
     </div>
