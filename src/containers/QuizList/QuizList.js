@@ -3,11 +3,10 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import axios from '../../axios/axios-quiz'
 import classes from './QuizList.module.css'
-export function QuizList(props) {
-  const [state, setState] = useState({
-    loading: true,
-    quizes: {},
-  })
+import { fetchQuizes } from '../../store/actions/quiz'
+import { connect } from 'react-redux'
+
+function QuizList(props) {
   function renderQuizes(quizes) {
     let result = []
     let i = 1
@@ -22,28 +21,30 @@ export function QuizList(props) {
     return result
   }
   useEffect(() => {
-    axios
-      .get('/quizes.json')
-      .then((response) => {
-        setState({
-          loading: false,
-          quizes: response.data,
-        })
-      })
-      .catch((e) => {
-        console.log(e)
-      })
+    props.fetchQuizes()
   }, [])
   return (
     <div className={classes.QuizList}>
       <div>
         <h1>Список тестов</h1>
-        {state.loading ? (
+        {props.loading && Object.keys(props.quizes).length !== 0 ? (
           <p>...loading</p>
         ) : (
-          <ul>{renderQuizes(state.quizes)}</ul>
+          <ul>{renderQuizes(props.quizes)}</ul>
         )}
       </div>
     </div>
   )
 }
+function mapStateToProps(state) {
+  return {
+    quizes: state.quiz.quizes,
+    loading: state.quiz.loading,
+  }
+}
+function mapDispathToProps(dispatch) {
+  return {
+    fetchQuizes: () => dispatch(fetchQuizes()),
+  }
+}
+export default connect(mapStateToProps, mapDispathToProps)(QuizList)
