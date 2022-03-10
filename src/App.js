@@ -5,7 +5,7 @@ import { QuizWrapper } from './components/Quiz/QuizWrapper/QuizWrapper'
 import { Quiz } from './components/Quiz/quiz'
 import QuizList from './containers/QuizList/QuizList'
 import { Auth } from './containers/Auth/Auth'
-import { QuizCreator } from './containers/QuizCreator/QuizCreator'
+import QuizCreator from './containers/QuizCreator/QuizCreator'
 import { Menu } from './components/Menu/Menu'
 function App() {
   const [state, setState] = useState({

@@ -3,43 +3,23 @@ import { Input } from '../../components/UI/Input/Input'
 import classes from './QuizCreator.module.css'
 import { Button } from '../../components/UI/Button/Button'
 import axios from '../../axios/axios-quiz'
-function formControlsCreator(number) {
-  const formControls = {}
-  const input = {
-    valid: false,
-    touched: false,
-    validation: {
-      required: true,
-    },
-  }
-  for (let i = 0; i < number; i++) {
-    formControls[`input${i + 1}`] = { ...input }
-  }
-  formControls.question = { ...input }
-  return formControls
-}
-export function QuizCreator(props) {
-  const initialState = {
-    questions: [],
-    question: '',
-    answers: {
-      option1: '',
-      option2: '',
-      option3: '',
-      option4: '',
-    },
-    rightAnswerId: null,
-    formControls: formControlsCreator(4),
-  }
-  const [state, setState] = useState(initialState)
+import { connect } from 'react-redux'
+import {
+  changeOptions,
+  changeQuestion,
+  addQuestion,
+  changeRightAnswer,
+  resetQuizCreator,
+} from '../../store/actions/quizCreator'
 
-  console.log('state', state)
-
+function QuizCreator(props) {
   function changeOptionsHandler(value, i) {
     const question = value
-    const answers = state.answers
+    const answers = props.answers
+    console.log(answers[`option${i}`])
     answers[`option${i}`] = question
-    const formControls = state.formControls
+    console.log(answers[`option${i}`])
+    const formControls = props.formControls
     let control = formControls[`input${i}`]
     control.touched = true
     let isValid = true
@@ -48,13 +28,12 @@ export function QuizCreator(props) {
     }
     control.valid = isValid
     formControls[`input${i}`] = control
-    setState((prevState) => {
-      return { ...prevState, answers, formControls }
-    })
+
+    props.changeOptions({ answers, formControls }) // redux
   }
   function changeQuestionHandler(event) {
     const question = event.target.value
-    const formControls = state.formControls
+    const formControls = props.formControls
     let control = formControls.question
     control.touched = true
     let isValid = true
@@ -64,30 +43,30 @@ export function QuizCreator(props) {
     }
     control.valid = isValid
     formControls.question = control
-    setState((prevState) => {
-      return { ...prevState, question, formControls }
-    })
+
+    props.changeQuestion({ question, formControls }) // redux
   }
   function changeRightAnswerHandler(event) {
-    setState((prevState) => {
-      return { ...prevState, rightAnswerId: +event.target.value }
-    })
+    const rightAnswerId = +event.target.value
+
+    props.changeRightAnswer({ rightAnswerId }) // redux
   }
 
-  function createOptionInputs() {
-    const keys = Object.keys(state.answers)
+  function createOptionInputs(props) {
+    const keys = Object.keys(props.answers)
     return keys.map((key, index) => {
+      console.log('props.answers[key]', props.answers[key])
       return (
         <React.Fragment key={key}>
           <label htmlFor={key}>Вариант {index + 1}</label>
           <Input
             type="text"
-            value={state.answers[key]}
+            value={props.answers[key]}
             onChange={(event) =>
               changeOptionsHandler(event.target.value, index + 1)
             }
-            valid={state.formControls[`input${index + 1}`].valid}
-            touched={state.formControls[`input${index + 1}`].touched}
+            valid={props.formControls[`input${index + 1}`].valid}
+            touched={props.formControls[`input${index + 1}`].touched}
             shouldValidate={true}
             id={key}
             errorMessage="Не оставляйте поле пустым"
@@ -96,21 +75,14 @@ export function QuizCreator(props) {
       )
     })
   }
-  function addQuestionHandler(event) {
+  function addQuestionHandler(event, props) {
     event.preventDefault()
-    setState((prevState) => {
-      const questions = prevState.questions
-      questions.push({
-        question: prevState.question,
-        answers: prevState.answers,
-        rightAnswerId: prevState.rightAnswerId,
-      })
-      return { ...initialState, questions }
-    })
+
+    props.addQuestion() // redux
   }
   function isFormValid() {
     let isValid = true
-    const formControls = state.formControls
+    const formControls = props.formControls
     for (let key of Object.keys(formControls)) {
       isValid = isValid && formControls[key].valid
     }
@@ -119,14 +91,14 @@ export function QuizCreator(props) {
   async function createTestHandler(event) {
     event.preventDefault()
     try {
-      await axios.post('/quizes.json', state.questions)
-      setState(initialState)
+      await axios.post('/quizes.json', props.questions)
+      props.resetQuizCreator() // redux
     } catch (e) {
       console.log(e)
     }
   }
   function isQuestonsEmpty() {
-    return state.questions.length === 0 ? true : false
+    return props.questions.length === 0 ? true : false
   }
   return (
     <div className={classes.Background}>
@@ -137,14 +109,14 @@ export function QuizCreator(props) {
           <Input
             type="text"
             id="question"
-            value={state.question}
+            value={props.question}
             onChange={(event) => changeQuestionHandler(event)}
-            valid={state.formControls.question.valid}
-            touched={state.formControls.question.touched}
+            valid={props.formControls.question.valid}
+            touched={props.formControls.question.touched}
             shouldValidate={true}
             errorMessage="Не оставляйте поле пустым"
           />
-          {createOptionInputs(state.answers)}
+          {createOptionInputs(props)}
           <label htmlFor="select">Выберите правильный ответ</label>
           <select id="select" onChange={changeRightAnswerHandler}>
             {[1, 2, 3, 4].map((id) => {
@@ -156,7 +128,7 @@ export function QuizCreator(props) {
             })}
           </select>
           <Button
-            onClick={addQuestionHandler}
+            onClick={(event) => addQuestionHandler(event, props)}
             text="Добавить вопрос"
             color="blue"
             disabled={!isFormValid()}
@@ -172,3 +144,25 @@ export function QuizCreator(props) {
     </div>
   )
 }
+
+function mapStateToProps(state) {
+  return {
+    questions: state.quizCreator.questions,
+    question: state.quizCreator.question,
+    answers: state.quizCreator.answers,
+    rightAnswerId: state.quizCreator.rightAnswerId,
+    formControls: state.quizCreator.formControls,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    changeQuestion: (payload) => dispatch(changeQuestion(payload)),
+    changeRightAnswer: (payload) => dispatch(changeRightAnswer(payload)),
+    changeOptions: (payload) => dispatch(changeOptions(payload)),
+    addQuestion: () => dispatch(addQuestion()),
+    resetQuizCreator: () => dispatch(resetQuizCreator()),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(QuizCreator)

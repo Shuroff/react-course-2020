@@ -1,9 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { useEffect } from 'react'
-import { useState } from 'react'
-import axios from '../../axios/axios-quiz'
 import classes from './QuizList.module.css'
-import { fetchQuizes } from '../../store/actions/quiz'
+import { fetchQuizes } from '../../store/actions/quizList'
 import { connect } from 'react-redux'
 
 function QuizList(props) {
@@ -38,8 +36,8 @@ function QuizList(props) {
 }
 function mapStateToProps(state) {
   return {
-    quizes: state.quiz.quizes,
-    loading: state.quiz.loading,
+    quizes: state.quizList.quizes,
+    loading: state.quizList.loading,
   }
 }
 function mapDispathToProps(dispatch) {
