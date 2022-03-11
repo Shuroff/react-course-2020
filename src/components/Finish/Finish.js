@@ -26,7 +26,9 @@ export function Finish(props) {
         Начать заново
       </button>
       <Link to={'/'}>
-        <button className="toQuizes">Перейти в список тестов</button>
+        <button className="toQuizes" onClick={props.refresh}>
+          Перейти в список тестов
+        </button>
       </Link>
     </div>
   )
