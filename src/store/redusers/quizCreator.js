@@ -47,10 +47,9 @@ export default function quizCreatorReducer(state = initialState, action) {
       })
       return { ...initialState, questions }
     case CHANGE_OPTIONS:
-      console.log(action.answers)
       return {
         ...state,
-        answers: action.answers,
+        answers: { ...action.answers },
         formControls: action.formControls,
       }
     case CHANGE_QUESTION:

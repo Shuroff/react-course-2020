@@ -1,21 +1,17 @@
 import React from 'react'
+import { useEffect } from 'react'
 import { Route, Routes, useNavigate, useLocation } from 'react-router-dom'
-import { useState, useEffect } from 'react'
 import { QuizWrapper } from './components/Quiz/QuizWrapper/QuizWrapper'
 import { Quiz } from './components/Quiz/quiz'
 import QuizList from './containers/QuizList/QuizList'
-import { Auth } from './containers/Auth/Auth'
+import Auth from './containers/Auth/Auth'
 import QuizCreator from './containers/QuizCreator/QuizCreator'
 import { Menu } from './components/Menu/Menu'
-function App() {
-  const [state, setState] = useState({
-    authorized: false,
-  })
-
+import { connect } from 'react-redux'
+import { setAuthorized } from './store/actions/app'
+function App(props) {
   function setAuthorized(authorized) {
-    setState({
-      authorized,
-    })
+    props.setAuthorized(authorized)
   }
   const quiz = (
     <QuizWrapper>
@@ -27,20 +23,20 @@ function App() {
   const navigation = useNavigate()
 
   useEffect(() => {
-    if (state.authorized && location.pathname === '/auth') {
+    if (props.authorized && location.pathname === '/auth') {
       navigation('/')
     }
-    if (!state.authorized && location.pathname === '/exit') {
+    if (!props.authorized && location.pathname === '/exit') {
       navigation('/')
     }
-    if (!state.authorized && location.pathname === '/quiz-creator') {
+    if (!props.authorized && location.pathname === '/quiz-creator') {
       navigation('/')
     }
-  }, [state.authorized])
+  }, [props.authorized])
 
   let routes
 
-  if (state.authorized) {
+  if (props.authorized) {
     routes = (
       <>
         <Routes>
@@ -49,7 +45,7 @@ function App() {
           <Route path="/quiz/:id" element={quiz}></Route>
         </Routes>
         <Menu
-          authorized={state.authorized}
+          authorized={props.authorized}
           setAuthorized={setAuthorized}
         ></Menu>
       </>
@@ -66,7 +62,7 @@ function App() {
           <Route path="/" element={<QuizList />}></Route>
         </Routes>
         <Menu
-          authorized={state.authorized}
+          authorized={props.authorized}
           setAuthorized={setAuthorized}
         ></Menu>
       </>
@@ -74,5 +70,16 @@ function App() {
   }
   return routes
 }
+function mapStateToProps(state) {
+  return {
+    authorized: state.app.authorized,
+  }
+}
 
-export default App
+function mapDispatchToProps(dispatch) {
+  return {
+    setAuthorized: (authorized) => dispatch(setAuthorized(authorized)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

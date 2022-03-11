@@ -1,9 +1,9 @@
-import { useState } from 'react'
 import axios from 'axios'
 import classes from './Auth.module.css'
 import { Input } from '../../components/UI/Input/Input'
 import { Button } from '../../components/UI/Button/Button'
-import { func } from 'prop-types'
+import { connect } from 'react-redux'
+import { setFormControls } from '../../store/actions/auth'
 const validateEmail = (email) => {
   return String(email)
     .toLowerCase()
@@ -12,45 +12,17 @@ const validateEmail = (email) => {
     )
 }
 
-export function Auth(props) {
-  const [state, setState] = useState({
-    formControls: {
-      email: {
-        value: '',
-        type: 'email',
-        label: 'Email',
-        errorMessage: 'Введите корректный email',
-        valid: false,
-        touched: false,
-        validation: {
-          required: true,
-          email: true,
-        },
-      },
-      password: {
-        value: '',
-        type: 'password',
-        label: 'Пароль',
-        errorMessage: 'Введите корректный пароль',
-        valid: false,
-        touched: false,
-        validation: {
-          required: true,
-          minLength: 6,
-        },
-      },
-    },
-  })
+function Auth(props) {
   const API_KEY = 'AIzaSyCJROTW2d3snrUe6naVnMlDFnmwWV4kJOw'
 
   function isFormValid() {
-    return state.formControls.email.valid && state.formControls.password.valid
+    return props.formControls.email.valid && props.formControls.password.valid
   }
 
   async function loginHandler() {
     const payload = {
-      email: state.formControls.email.value,
-      password: state.formControls.email.value,
+      email: props.formControls.email.value,
+      password: props.formControls.email.value,
       returnSecureToken: true,
     }
     try {
@@ -65,8 +37,8 @@ export function Auth(props) {
   }
   async function registerHandler() {
     const payload = {
-      email: state.formControls.email.value,
-      password: state.formControls.email.value,
+      email: props.formControls.email.value,
+      password: props.formControls.email.value,
       returnSecureToken: true,
     }
     try {
@@ -106,7 +78,7 @@ export function Auth(props) {
   }
 
   function onChangeHandler(event, controlName) {
-    const formControls = { ...state.formControls }
+    const formControls = { ...props.formControls }
     const control = { ...formControls[controlName] }
 
     control.value = event.target.value
@@ -115,13 +87,11 @@ export function Auth(props) {
 
     formControls[controlName] = control
 
-    setState({
-      formControls,
-    })
+    props.setFormControls(formControls) // redux
   }
   function renderInputs() {
-    return Object.keys(state.formControls).map((controlName, index) => {
-      const control = state.formControls[controlName]
+    return Object.keys(props.formControls).map((controlName, index) => {
+      const control = props.formControls[controlName]
       return (
         <Input
           key={controlName + index}
@@ -155,3 +125,18 @@ export function Auth(props) {
     </div>
   )
 }
+
+function mapStateToProps(state) {
+  return {
+    formControls: state.auth.formControls,
+    password: state.auth.password,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    setFormControls: (formControls) => dispatch(setFormControls(formControls)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Auth)

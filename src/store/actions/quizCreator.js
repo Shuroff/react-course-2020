@@ -22,6 +22,7 @@ export function changeRightAnswer({ rightAnswerId }) {
 }
 
 export function changeOptions({ answers, formControls }) {
+  console.log('answers ->', answers)
   return {
     type: CHANGE_OPTIONS,
     answers,
