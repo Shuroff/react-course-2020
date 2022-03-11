@@ -1,77 +1,59 @@
 import classes from './Quiz.module.css'
-import { useState } from 'react'
 import { Question } from '../Question/Question'
 import { AnswerList } from '../Answer/AnswerList'
 import { Finish } from '../Finish/Finish'
 import { useEffect } from 'react/cjs/react.development'
 import axios from '../../axios/axios-quiz'
-import { useNavigate, useParams, useLocation } from 'react-router-dom'
-export function Quiz() {
-  const initialState = {
-    questions: [],
-    loading: true,
-    currentQuestion: 0,
-    isFinished: false,
-    answeredQuestions: [], // {id: true/false}
-  }
-  const [state, setState] = useState(initialState)
-
+import { useParams } from 'react-router-dom'
+import { connect } from 'react-redux'
+import {
+  setQuestionsAndLoading,
+  setAnsweredQuestions,
+  encreaseCurrentQuestion,
+  setIsFinished,
+  refresh,
+} from '../../store/actions/quiz'
+function Quiz(props) {
   const params = useParams()
   useEffect(() => {
     axios
       .get(`/quizes/${params.id}.json`)
       .then((quiz) => {
         const isFinished = false
-        setState((prevState) => {
-          return { ...prevState, questions: quiz.data, loading: false }
-        })
+        props.setQuestionsAndLoading({ questions: quiz.data, loading: false }) // redux
       })
       .catch((e) => {
         console.log(e)
       })
   }, [])
   const changeAnsweredQuestions = (question) => {
-    setState((prevState) => {
-      const newAnsweredQuestions = [...prevState.answeredQuestions, question]
-      return { ...prevState, answeredQuestions: newAnsweredQuestions }
-    })
+    props.setAnsweredQuestions(question) // redux
   }
   const nextQuestion = () => {
-    if (state.currentQuestion + 1 !== state.questions.length) {
-      setState((prevState) => {
-        return { ...prevState, currentQuestion: prevState.currentQuestion + 1 }
-      })
+    if (props.currentQuestion + 1 !== props.questions.length) {
+      props.encreaseCurrentQuestion() //redux
     } else {
-      setState((prevState) => {
-        return { ...prevState, isFinished: true }
-      })
+      const isFinished = true
+      props.setIsFinished(isFinished) //redux
     }
   }
   const refresh = () => {
-    setState((prevState) => {
-      return {
-        ...prevState,
-        loading: false,
-        isFinished: false,
-        answeredQuestions: [],
-        currentQuestion: 0,
-      }
-    })
+    props.refresh()
   }
-  if (state.loading) {
+  if (props.loading) {
     return <h1>...loading</h1>
   }
-  const currentQuestion = state.currentQuestion
-  const text = state.questions[currentQuestion].question
-  const question = state.questions[currentQuestion]
+  const currentQuestion = props.currentQuestion
+  const text = props.questions[currentQuestion].question
+  const question = props.questions[currentQuestion]
   return (
     <div className={classes.quiz}>
-      {!state.isFinished ? (
+      {!props.isFinished ? (
         <>
           <Question
             question={text}
             index={currentQuestion}
-            length={state.questions.length}
+            length={props.questions.length}
           />
           <AnswerList
             question={question}
@@ -82,11 +64,34 @@ export function Quiz() {
         </>
       ) : (
         <Finish
-          answeredQuestions={state.answeredQuestions}
-          questions={state.questions}
+          answeredQuestions={props.answeredQuestions}
+          questions={props.questions}
           refresh={refresh}
         />
       )}
     </div>
   )
 }
+
+function mapStateToProps(state) {
+  return {
+    questions: state.quiz.questions,
+    loading: state.quiz.loading,
+    currentQuestion: state.quiz.currentQuestion,
+    isFinished: state.quiz.isFinished,
+    answeredQuestions: state.quiz.answeredQuestions,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    setQuestionsAndLoading: (payload) =>
+      dispatch(setQuestionsAndLoading(payload)),
+    setAnsweredQuestions: (question) =>
+      dispatch(setAnsweredQuestions(question)),
+    encreaseCurrentQuestion: () => dispatch(encreaseCurrentQuestion()),
+    setIsFinished: (isFinished) => dispatch(setIsFinished(isFinished)),
+    refresh: () => dispatch(refresh()),
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Quiz)
